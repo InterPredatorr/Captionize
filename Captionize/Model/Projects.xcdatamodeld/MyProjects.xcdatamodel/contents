@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21754" systemVersion="22E261" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="ActiveTextConfiguration" representedClassName="ActiveTextConfiguration" syncable="YES">
+        <attribute name="color" optional="YES" attributeType="String"/>
+        <attribute name="fontName" optional="YES" attributeType="String"/>
+        <attribute name="fontSize" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <relationship name="myProject" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MyProject" inverseName="activeTextConfig" inverseEntity="MyProject"/>
+    </entity>
+    <entity name="BackgroundConfiguration" representedClassName="BackgroundConfiguration" syncable="YES">
+        <attribute name="color" optional="YES" attributeType="String"/>
+        <relationship name="myProject" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MyProject" inverseName="backgroundConfig" inverseEntity="MyProject"/>
+    </entity>
+    <entity name="Caption" representedClassName="Caption" syncable="YES">
+        <attribute name="captionText" optional="YES" attributeType="String"/>
+        <attribute name="endPoint" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="startPoint" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <relationship name="myProject" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MyProject" inverseName="captions" inverseEntity="MyProject"/>
+    </entity>
+    <entity name="MyProject" representedClassName="MyProject" syncable="YES">
+        <attribute name="assetId" optional="YES" attributeType="String"/>
+        <relationship name="activeTextConfig" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ActiveTextConfiguration" inverseName="myProject" inverseEntity="ActiveTextConfiguration"/>
+        <relationship name="backgroundConfig" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="BackgroundConfiguration" inverseName="myProject" inverseEntity="BackgroundConfiguration"/>
+        <relationship name="captions" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Caption" inverseName="myProject" inverseEntity="Caption"/>
+        <relationship name="textConfig" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TextConfiguration" inverseName="myProject" inverseEntity="TextConfiguration"/>
+    </entity>
+    <entity name="TextConfiguration" representedClassName="TextConfiguration" syncable="YES">
+        <attribute name="alignment" optional="YES" attributeType="Integer 32" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="color" optional="YES" attributeType="String"/>
+        <attribute name="fontName" optional="YES" attributeType="String"/>
+        <attribute name="fontSize" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <relationship name="myProject" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MyProject" inverseName="textConfig" inverseEntity="MyProject"/>
+    </entity>
+</model>

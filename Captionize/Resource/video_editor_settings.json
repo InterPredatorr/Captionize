@@ -1,0 +1,99 @@
+{
+    "settings": {
+        "customFont": {
+            "name": "Custom",
+            "font": {
+                "name": "Roboto",
+                "size": 20.0
+            }
+        },
+        "fonts": [
+            {
+                "name": "Roboto-Bold",
+                "font": {
+                    "name": "Roboto-Bold",
+                    "size": 20.0
+                }
+            },
+            {
+                "name": "Roboto-Medium",
+                "font": {
+                    "name": "Roboto-Medium",
+                    "size": 20.0
+                }
+            },
+            {
+                "name": "Roboto-Regular",
+                "font": {
+                    "name": "Roboto-Regular",
+                    "size": 20.0
+                }
+            }
+        ],
+        "colors": [
+            {
+                "color": {
+                    "red": 1.0,
+                    "green": 1.0,
+                    "blue": 1.0,
+                    "alpha": 1.0
+                },
+                "name": "TEXT COLOR",
+                "type": "text"
+            },
+            {
+                "color": {
+                    "red": 0.0,
+                    "green": 0.0,
+                    "blue": 0.0,
+                    "alpha": 0.4
+                },
+                "name": "BACKGROUND COLOR",
+                "type": "background"
+            },
+            {
+                "color": {
+                    "red": 0.0,
+                    "green": 0.0,
+                    "blue": 1.0,
+                    "alpha": 1.0
+                },
+                "name": "ACTIVE WORD COLOR",
+                "type": "activeWord"
+            }
+        ],
+        "alignments": [
+            {
+                "iconName": "text.alignleft",
+                "alignment": 0
+            },
+            {
+                "iconName": "text.aligncenter",
+                "alignment": 1
+            },
+            {
+                "iconName": "text.alignright",
+                "alignment": 2
+            }
+        ],
+        "capitalizationTypes": [
+            {
+                "type": "--"
+            },
+            {
+                "type": "AB"
+            },
+            {
+                "type": "Ab"
+            },
+            {
+                "type": "ab"
+            }
+        ],
+        "textSizeConfig": {
+            "currentSize": 15.0,
+            "maxSize": 60.0,
+            "minSize": 5.0
+        }
+    }
+}
