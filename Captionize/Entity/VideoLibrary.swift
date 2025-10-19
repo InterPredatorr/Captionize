@@ -8,46 +8,101 @@
 import Foundation
 import PhotosUI
 
+enum VideoLibraryError: Error {
+    case permissionDenied
+    case noVideosFound
+    case fetchFailed(Error)
+
+    var localizedDescription: String {
+        switch self {
+        case .permissionDenied:
+            return "Photo library access denied. Please enable in Settings."
+        case .noVideosFound:
+            return "No videos found in your library."
+        case .fetchFailed(let error):
+            return "Failed to load videos: \(error.localizedDescription)"
+        }
+    }
+}
+
 protocol VideoLibrary {
-    func getVideoAlbums(_ completionHandler: @escaping (([VideoAlbum]) -> ()))
+    func getVideoAlbums() async throws -> [VideoAlbum]
 }
 
 class DefaultVideoLibrary: VideoLibrary {
-    
-    func getVideoAlbums(_ completionHandler: @escaping (([VideoAlbum]) -> ())) {
+
+    func getVideoAlbums() async throws -> [VideoAlbum] {
+        // Check photo library authorization
+        let status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
+        guard status == .authorized || status == .limited else {
+            throw VideoLibraryError.permissionDenied
+        }
+
         let allAlbums = fetchAlbumsWhichHasVideo()
-        var videoAlbums: [VideoAlbum] = []
-        let mainDispatchGroup = DispatchGroup()
-        for album in allAlbums {
-            mainDispatchGroup.enter()
-            let videosData = getVideos(from: album)
-            var videos: [Video] = []
-            let dispatchGroup = DispatchGroup()
-            for asset in videosData {
-                dispatchGroup.enter()
-                self.map(asset: asset) { video in
-                    videos.append(video)
-                    dispatchGroup.leave()
+        guard !allAlbums.isEmpty else {
+            throw VideoLibraryError.noVideosFound
+        }
+
+        return try await withThrowingTaskGroup(of: VideoAlbum?.self) { group in
+            for album in allAlbums {
+                group.addTask {
+                    try await self.fetchVideosForAlbum(album)
                 }
             }
-            dispatchGroup.notify(queue: .main) {
-                videoAlbums.append(.init(name: album.localizedTitle ?? album.localIdentifier, videos: videos))
-                mainDispatchGroup.leave()
+
+            var videoAlbums: [VideoAlbum] = []
+            for try await album in group {
+                if let album = album {
+                    videoAlbums.append(album)
+                }
             }
-        }
-        mainDispatchGroup.notify(queue: .main) {
-            completionHandler(videoAlbums)
+            return videoAlbums
         }
     }
-    
-    private func map(asset: PHAsset, completionHandler: @escaping ((Video) -> ())) {
+
+    private func fetchVideosForAlbum(_ album: PHAssetCollection) async throws -> VideoAlbum? {
+        let videosData = getVideos(from: album)
+        guard !videosData.isEmpty else { return nil }
+
+        let videos = try await withThrowingTaskGroup(of: Video.self) { group in
+            for asset in videosData {
+                group.addTask {
+                    try await self.map(asset: asset)
+                }
+            }
+
+            var result: [Video] = []
+            for try await video in group {
+                result.append(video)
+            }
+            return result
+        }
+
+        return VideoAlbum(name: album.localizedTitle ?? album.localIdentifier, videos: videos)
+    }
+
+    private func map(asset: PHAsset) async throws -> Video {
         let options = PHImageRequestOptions()
         options.isNetworkAccessAllowed = true
         options.deliveryMode = .highQualityFormat
         options.version = .current
+        options.isSynchronous = false
+
         let duration = asset.duration.formateInSecondsMinute()
-        PHImageManager.default().requestImage(for: asset, targetSize: CGSize(width: 100, height: 100), contentMode: .aspectFit, options: options) { (image, info) in
-            completionHandler(Video(thumbnail: image, duration: duration, asset: asset))
+
+        return try await withCheckedThrowingContinuation { continuation in
+            PHImageManager.default().requestImage(
+                for: asset,
+                targetSize: CGSize(width: 100, height: 100),
+                contentMode: .aspectFit,
+                options: options
+            ) { (image, info) in
+                if let error = info?[PHImageErrorKey] as? Error {
+                    continuation.resume(throwing: VideoLibraryError.fetchFailed(error))
+                } else {
+                    continuation.resume(returning: Video(thumbnail: image, duration: duration, asset: asset))
+                }
+            }
         }
     }
     

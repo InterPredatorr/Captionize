@@ -23,11 +23,30 @@ struct PickVideoView: View {
     
     var body: some View {
         ZStack {
-            VStack {
-                topView
-                videoGrid
-                bottomView
-            }.padding()
+            if viewModel.isLoading {
+                ProgressView("Loading videos...")
+            } else if let errorMessage = viewModel.errorMessage {
+                VStack(spacing: 20) {
+                    Image(systemName: "exclamationmark.triangle")
+                        .font(.system(size: 50))
+                        .foregroundColor(.orange)
+                    Text(errorMessage)
+                        .multilineTextAlignment(.center)
+                        .padding()
+                    Button("Retry") {
+                        Task {
+                            await viewModel.fetchVideoAlbums()
+                        }
+                    }
+                    .buttonStyle(.bordered)
+                }
+            } else {
+                VStack {
+                    topView
+                    videoGrid
+                    bottomView
+                }.padding()
+            }
         }
     }
     
