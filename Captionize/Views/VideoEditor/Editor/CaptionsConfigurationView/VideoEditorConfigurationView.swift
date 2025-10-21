@@ -75,19 +75,19 @@ struct VideoEditorConfigurationView: View {
             .coordinateSpace(name: "zScreen")
             .frame(height: Constants.videoEditorHeight)
         }
-        .simultaneousGesture(
-            DragGesture()
-                .onChanged { _ in
-                    if viewModel.editorStates.isAutoScrolling {
-                        viewModel.editorStates.isAutoScrolling = false
-                    }
-                }
-                .onEnded { _ in
-                    if viewModel.editorStates.isPlaying {
-                        viewModel.editorStates.isAutoScrolling = true
-                    }
-                }
-        )
+//        .simultaneousGesture(
+//            DragGesture()
+//                .onChanged { _ in
+//                    if viewModel.editorStates.isAutoScrolling {
+//                        viewModel.editorStates.isAutoScrolling = false
+//                    }
+//                }
+//                .onEnded { _ in
+//                    if viewModel.editorStates.isPlaying {
+//                        viewModel.editorStates.isAutoScrolling = true
+//                    }
+//                }
+//        )
     }
     
     var currentTimeIndicatorView: some View {

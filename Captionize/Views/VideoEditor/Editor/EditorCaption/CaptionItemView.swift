@@ -22,7 +22,7 @@ struct CaptionItemView: View {
                 Image(systemName: "chevron.compact.left")
             }
             .frame(width: Constants.VECap.buttonWidth)
-            .simultaneousGesture(DragGesture(minimumDistance: 0, coordinateSpace: .global)
+            .highPriorityGesture(DragGesture(minimumDistance: 0, coordinateSpace: .global)
                 .onChanged({ value in
                     checkEdge(with: value)
                     if isAtEdge(value: value.startLocation.x) && !isAtEdge(value: value.location.x) {
@@ -33,7 +33,7 @@ struct CaptionItemView: View {
                         handleGestureEnd()
                     })
             )
-            .simultaneousGesture(DragGesture(minimumDistance: 0,
+            .highPriorityGesture(DragGesture(minimumDistance: 0,
                                              coordinateSpace: CoordinateSpace.named("captionSpace"))
                 .onChanged({ value in
                     item.side = .left
@@ -57,7 +57,7 @@ struct CaptionItemView: View {
                 Spacer().frame(width: Constants.VECap.buttonPadding)
             }
             .frame(width: Constants.VECap.buttonWidth)
-            .simultaneousGesture(DragGesture(minimumDistance: 0, coordinateSpace: .global)
+            .highPriorityGesture(DragGesture(minimumDistance: 0, coordinateSpace: .global)
                 .onChanged({ value in
                     checkEdge(with: value)
                     if isAtEdge(value: value.startLocation.x) && !isAtEdge(value: value.location.x) {
@@ -68,7 +68,7 @@ struct CaptionItemView: View {
                         handleGestureEnd()
                     })
             )
-            .simultaneousGesture(DragGesture(minimumDistance: 0,
+            .highPriorityGesture(DragGesture(minimumDistance: 0,
                                              coordinateSpace: CoordinateSpace.named("captionSpace"))
                 .onChanged({ value in
                     item.side = .right
