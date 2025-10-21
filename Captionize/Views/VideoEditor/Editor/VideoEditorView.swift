@@ -27,9 +27,6 @@ struct VideoEditorView: View {
             case .text:
                 VideoEditorTextConfigurationView(viewModel: viewModel)
                     .frame(height: UIScreen.screenHeight.percentageWith(percent: Constants.videoEditorConfigViewPercentage))
-            case .color:
-                VideoEditorColorConfigurationView(viewModel: viewModel, colors: $viewModel.settings.colors)
-                    .frame(height: UIScreen.screenHeight.percentageWith(percent: Constants.videoEditorConfigViewPercentage))
             case .resync:
                 VideoEditorConfigurationView(viewModel: viewModel)
                     .frame(height: UIScreen.screenHeight.percentageWith(percent: Constants.videoEditorConfigViewPercentage))

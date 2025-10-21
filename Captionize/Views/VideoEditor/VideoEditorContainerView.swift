@@ -59,12 +59,6 @@ struct VideoEditorContainerView: View {
                 }
             }
             if !isExporting && viewModel.editorStates.isLoaded {
-                ToolbarItem(placement: .principal) {
-                    Images.Icon.eyeIcon
-                        .resizable()
-                        .foregroundColor(Colors.appPurple)
-                        .frame(width: 24, height: 24)
-                }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
                         if hasSuccessfullyExported {
@@ -121,6 +115,10 @@ struct VideoEditorContainerView: View {
                 caption.captionText = item.captionText
                 caption.startPoint = item.startPoint
                 caption.endPoint = item.endPoint
+                caption.textColor = item.textColorHex
+                caption.backgroundColor = item.backgroundColorHex
+                caption.positionX = item.positionX ?? -1
+                caption.positionY = item.positionY ?? -1
                 return caption
             })
             let config = viewModel.captionsConfig.captionConfig
@@ -128,20 +126,9 @@ struct VideoEditorContainerView: View {
             textConfig.alignment = Int32(config.text.alignment.rawValue)
             textConfig.fontName = config.text.font.fontName
             textConfig.fontSize = config.text.fontSize
-            textConfig.color = config.text.color.toHexString()
             textConfig.myProject = excistingProject
-            let backgroundConfig = BackgroundConfiguration(context: moc)
-            backgroundConfig.color = config.background.color.toHexString()
-            backgroundConfig.myProject = excistingProject
-            let activeWordConfig = ActiveTextConfiguration(context: moc)
-            activeWordConfig.color = config.activeWord.color.toHexString()
-            activeWordConfig.fontName = config.activeWord.font.fontName
-            activeWordConfig.fontSize = config.activeWord.fontSize
-            activeWordConfig.myProject = excistingProject
             
             excistingProject.textConfig = textConfig
-            excistingProject.backgroundConfig = backgroundConfig
-            excistingProject.activeTextConfig = activeWordConfig
             excistingProject.captions = arr
         }
         do {

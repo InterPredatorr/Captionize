@@ -17,7 +17,6 @@ extension TextConfiguration {
     }
 
     @NSManaged public var alignment: Int32
-    @NSManaged public var color: String?
     @NSManaged public var fontName: String?
     @NSManaged public var fontSize: Double
     @NSManaged public var myProject: MyProject?

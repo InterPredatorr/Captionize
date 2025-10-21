@@ -9,6 +9,7 @@ import Photos
 import UIKit
 import AVFoundation
 import Foundation
+import SwiftUI
 
 public var isSimulator: Bool {
   #if targetEnvironment(simulator)
@@ -48,13 +49,34 @@ class VideoExportManager {
         textLabel.text = item.captionText
         textLabel.font = config.captionConfig.text.font.withSize(naturalFontSize)
         textLabel.textAlignment = config.captionConfig.text.alignment
+        // Size within 80% width
         textLabel.frame.size.width = frame.width.percentageWith(percent: 80)
         textLabel.sizeToFit()
-        
+        let captionHeight = frame.height.percentageWith(percent: 20)
+        if textLabel.frame.height > captionHeight {
+            textLabel.frame.size.height = captionHeight
+        }
+        // Create CATextLayer based on UILabel metrics
         let textLayer = CATextLayer()
+        textLayer.contentsScale = 2.0
         textLayer.frame.size = textLabel.frame.size
-        textLayer.frame.origin = CGPoint(x: frame.midX - textLayer.frame.width / 2,
-                                         y: frame.height.percentageWith(percent: 20) / 4)
+        textLayer.anchorPoint = CGPoint(x: 0.5, y: 0.5)
+        // Position: use normalized position if provided (0...1); else bottom center with 5% bottom spacing
+        if let px = item.positionX, let py = item.positionY, (0.0...1.0).contains(px), (0.0...1.0).contains(py) {
+            let halfW = textLayer.frame.width / 2
+            let halfH = textLayer.frame.height / 2
+            var centerX = CGFloat(px) * frame.width
+            var centerY = frame.height - (CGFloat(py) * frame.height)
+            centerX = min(max(centerX, halfW), frame.width - halfW)
+            centerY = min(max(centerY, halfH), frame.height - halfH)
+            textLayer.position = CGPoint(x: centerX, y: centerY)
+        } else {
+            // Bottom align with 5% bottom spacing (captionHeight/4)
+            let bottomSpace = captionHeight / 4
+            let halfH = textLayer.frame.height / 2
+            let centerY = bottomSpace + halfH
+            textLayer.position = CGPoint(x: frame.width / 2, y: centerY)
+        }
         textLayer.isWrapped = true
         textLayer.allowsFontSubpixelQuantization = true
         textLayer.string = item.captionText
@@ -63,8 +85,13 @@ class VideoExportManager {
         textLayer.font = config.captionConfig.text.font
         textLayer.fontSize = naturalFontSize
         textLayer.alignmentMode = textAlignment(from: config.captionConfig.text.alignment)
-        textLayer.backgroundColor = config.captionConfig.background.color
-        textLayer.foregroundColor = config.captionConfig.text.color
+        let ap = Colors.appPurple.components
+        let defaultBgCG = UIColor(red: ap.red, green: ap.green, blue: ap.blue, alpha: ap.opacity).cgColor
+        let defaultTextCG = UIColor.white.cgColor
+        let bgCG = CGColor.fromHexString(item.backgroundColorHex) ?? defaultBgCG
+        let textCG = CGColor.fromHexString(item.textColorHex) ?? defaultTextCG
+        textLayer.backgroundColor = bgCG
+        textLayer.foregroundColor = textCG
         textLayer.display()
         return textLayer
     }
@@ -184,14 +211,11 @@ class VideoExportManager {
         await exportSession.export()
         switch exportSession.status {
         case .completed:
+            let outputURL = exportSession.outputURL
             PHPhotoLibrary.shared().performChanges({
                 PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: exportURL)
             }) { saved, error in
-                if saved {
-                    onComplete(exportSession.outputURL)
-                } else {
-                    onComplete(nil)
-                }
+                onComplete(saved ? outputURL : nil)
             }
         default:
             onComplete(nil)

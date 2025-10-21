@@ -10,23 +10,11 @@ import SwiftUI
 
 struct VideoEditorCaptionConfig {
     var text: VideoEditorCaptionTextConfig
-    var background: VideoEditorCaptionBackgroundConfig
-    var activeWord: VideoEditorCaptionActiveWordConfig
 }
 
 struct VideoEditorCaptionTextConfig {
     var font: UIFont
     var fontSize: CGFloat
-    var color: CGColor
     var alignment: NSTextAlignment
 }
 
-struct VideoEditorCaptionBackgroundConfig {
-    var color: CGColor
-}
-
-struct VideoEditorCaptionActiveWordConfig {
-    var font: UIFont
-    var fontSize: CGFloat
-    var color: CGColor
-}

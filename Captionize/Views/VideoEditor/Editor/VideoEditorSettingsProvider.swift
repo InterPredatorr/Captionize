@@ -15,7 +15,6 @@ struct VideoEditorSettingsModel: Decodable {
 struct VideoEditorSettings: Decodable {
     var customFont: VideoEditorFont
     var fonts: [VideoEditorFont]
-    var colors: [VideoEditorColor]
     var alignments: [VideoEditorAlignment]
     var capitalizationTypes: [CapitalizationType]
     var textSizeConfig: VideoEditorTextSizeConfig

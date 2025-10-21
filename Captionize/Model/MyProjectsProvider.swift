@@ -23,6 +23,10 @@ class MyProjectsProvider: ObservableObject {
     }
 
     private init() {
+        if let description = persistentContainer.persistentStoreDescriptions.first {
+            description.shouldMigrateStoreAutomatically = true
+            description.shouldInferMappingModelAutomatically = true
+        }
         persistentContainer.loadPersistentStores { description, error in
             if let error = error {
                 print(error.localizedDescription)

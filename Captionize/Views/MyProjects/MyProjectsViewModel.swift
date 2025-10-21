@@ -33,9 +33,13 @@ class MyProjectsViewModel: ObservableObject {
     func fetchCaptions(by objectId: NSManagedObjectID) -> [CaptionItem] {
         guard let project = myProjects.first(where: { $0.objectID == objectId }),
               let objects = project.captions?.allObjects as? [Caption] else { return [] }
-        return objects.map({ CaptionItem(captionText: $0.captionText ?? "DEBUG: Some error occured while fetching",
+        return objects.map({ CaptionItem(captionText: $0.captionText ?? "",
                                          startPoint: $0.startPoint,
-                                         endPoint: $0.endPoint) })
+                                         endPoint: $0.endPoint,
+                                         textColorHex: $0.textColor,
+                                         backgroundColorHex: $0.backgroundColor,
+                                         positionX: ($0.positionX >= 0) ? $0.positionX : nil,
+                                         positionY: ($0.positionY >= 0) ? $0.positionY : nil) })
     }
     func fetchVideo(with assetId: String?, completion: @escaping (Video) -> ()) {
         guard let assetId = assetId,
@@ -43,11 +47,12 @@ class MyProjectsViewModel: ObservableObject {
                                                                      options: nil).firstObject else { return }
         let options = PHImageRequestOptions()
         options.isNetworkAccessAllowed = true
+        options.resizeMode = .exact
         options.deliveryMode = .highQualityFormat
         options.version = .current
         PHImageManager.default().requestImage(for: asset,
                                               targetSize: CGSize(width: 400, height: 400),
-                                              contentMode: .aspectFit,
+                                              contentMode: .aspectFill,
                                               options: options) { (image, _) in
             let video = Video(thumbnail: image,
                                duration: asset.duration.formateInSecondsMinute(),
@@ -75,16 +80,8 @@ class MyProjectsViewModel: ObservableObject {
         let textConfig = VideoEditorCaptionTextConfig(font: UIFont(name: item?.textConfig?.fontName ?? "roboto",
                                                                    size: item?.textConfig?.fontSize ?? 10.0) ?? .roboto(size: 10.0),
                                                       fontSize: item?.textConfig?.fontSize ?? 10.0,
-                                                      color: CGColor.fromHexString(item?.textConfig?.color) ?? UIColor.white.cgColor,
                                                       alignment: NSTextAlignment(rawValue: Int(item?.textConfig?.alignment ?? 1)) ?? .center)
-        let backgroundConfig = VideoEditorCaptionBackgroundConfig(color: CGColor.fromHexString(item?.backgroundConfig?.color) ?? UIColor.black.cgColor)
-        let activeTextConfig = VideoEditorCaptionActiveWordConfig(font: UIFont(name: item?.activeTextConfig?.fontName ?? "roboto",
-                                                                               size: item?.activeTextConfig?.fontSize ?? 10.0) ?? .roboto(size: 10.0),
-                                                                  fontSize: item?.activeTextConfig?.fontSize ?? 10.0,
-                                                                  color: CGColor.fromHexString(item?.activeTextConfig?.color) ?? UIColor.red.cgColor)
-        let captionConfig = VideoEditorCaptionConfig(text: textConfig,
-                                                     background: backgroundConfig,
-                                                     activeWord: activeTextConfig)
+        let captionConfig = VideoEditorCaptionConfig(text: textConfig)
         return VideoEditorViewModel(video: video,
                                     captionsConfig: VideoEditorViewModel.CaptionsConfig(items: captions,
                                                                                         captionConfig: captionConfig))

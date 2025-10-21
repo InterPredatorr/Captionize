@@ -9,14 +9,18 @@ import SwiftUI
 import Combine
 import AVKit
 import PhotosUI
+import UIKit
 
 enum Editor: String, CaseIterable {
     case text = "Text"
-    case color = "Color"
-    case resync = "Resync"
+    case resync = "Captions"
 }
 
 class VideoEditorViewModel: ObservableObject {
+    
+    // Sheet presentation state for editing a caption
+    @Published var isShowingCaptionSheet: Bool = false
+    @Published var selectedCaptionId: UUID? = nil
     
     struct VideoEditorStates {
         var isLoaded = false
@@ -276,18 +280,6 @@ extension VideoEditorViewModel {
     }
     
     private func setupConfigs() {
-        settings.colors = settings.colors.map { color in
-            var tmp = color
-            switch color.type {
-            case .text:
-                tmp.color = captionsConfig.captionConfig.text.color
-            case .background:
-                tmp.color = captionsConfig.captionConfig.background.color
-            case .activeWord:
-                tmp.color = captionsConfig.captionConfig.activeWord.color
-            }
-            return tmp
-        }
         settings.alignments = settings.alignments.map { alignment in
             var tmp = alignment
             if tmp.alignment == captionsConfig.captionConfig.text.alignment.rawValue {
@@ -319,14 +311,6 @@ extension VideoEditorViewModel {
                 return tmp
             })
         }
-    }
-    
-    
-    
-    func updateColors() {
-        captionsConfig.captionConfig.text.color = settings.colors.first(where: { $0.type == .text })?.color ?? Color.white.cgColor!
-        captionsConfig.captionConfig.background.color = settings.colors.first(where: { $0.type == .background })?.color ?? Color.black.cgColor!
-        captionsConfig.captionConfig.activeWord.color = settings.colors.first(where: { $0.type == .activeWord })?.color ?? Color.red.cgColor!
     }
 
     func udpatePoints(for item: CaptionItem, x: CGFloat) {
@@ -382,7 +366,7 @@ extension VideoEditorViewModel {
     func addNewCaption() {
         playerConfig.player.pause()
         editorStates.isPlaying = false
-        let newItem = CaptionItem(captionText: "DEBUG: Some error occured while fetching, DEBUG: Some error occured while fetching, DEBUG: Some error occured while fetching",
+        let newItem = CaptionItem(captionText: "",
                                   startPoint: (playerConfig.currentTime + 0.5).toPoints,
                                   endPoint: (playerConfig.currentTime + 0.5).toPoints + Constants.VECap.minWidth)
         if let index = captionsConfig.items.firstIndex(where: { $0.startPoint > (playerConfig.currentTime + 0.5).toPoints }) {

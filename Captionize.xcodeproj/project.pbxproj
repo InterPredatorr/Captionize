@@ -9,15 +9,11 @@
 /* Begin PBXBuildFile section */
 		0D569CEE2A1FEBCF00D3A360 /* CGColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D569CED2A1FEBCF00D3A360 /* CGColor.swift */; };
 		0D569D432A20024A00D3A360 /* Projects.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 0D569D412A20024A00D3A360 /* Projects.xcdatamodeld */; };
-		0D569D762A2004F000D3A360 /* ActiveTextConfiguration+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D569D712A2004EF00D3A360 /* ActiveTextConfiguration+CoreDataClass.swift */; };
 		0D569D772A2004F000D3A360 /* TextConfiguration+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D569D6E2A2004EF00D3A360 /* TextConfiguration+CoreDataClass.swift */; };
 		0D569D782A2004F000D3A360 /* MyProject+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D569D6C2A2004EF00D3A360 /* MyProject+CoreDataProperties.swift */; };
 		0D569D792A2004F000D3A360 /* TextConfiguration+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D569D6F2A2004EF00D3A360 /* TextConfiguration+CoreDataProperties.swift */; };
-		0D569D7A2A2004F000D3A360 /* BackgroundConfiguration+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D569D6D2A2004EF00D3A360 /* BackgroundConfiguration+CoreDataProperties.swift */; };
 		0D569D7B2A2004F000D3A360 /* Caption+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D569D702A2004EF00D3A360 /* Caption+CoreDataClass.swift */; };
 		0D569D7C2A2004F000D3A360 /* Caption+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D569D752A2004F000D3A360 /* Caption+CoreDataProperties.swift */; };
-		0D569D7D2A2004F000D3A360 /* ActiveTextConfiguration+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D569D732A2004F000D3A360 /* ActiveTextConfiguration+CoreDataProperties.swift */; };
-		0D569D7E2A2004F000D3A360 /* BackgroundConfiguration+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D569D722A2004EF00D3A360 /* BackgroundConfiguration+CoreDataClass.swift */; };
 		0D569D7F2A2004F000D3A360 /* MyProject+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D569D742A2004F000D3A360 /* MyProject+CoreDataClass.swift */; };
 		0D56A6A92A2321F400D3A360 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D56A6A82A2321F400D3A360 /* String.swift */; };
 		0D6A4F3729FE467900527400 /* EditorCaptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D6A4F3629FE467900527400 /* EditorCaptionView.swift */; };
@@ -26,10 +22,10 @@
 		0D6A4F4029FF949000527400 /* CGFloat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D6A4F3F29FF949000527400 /* CGFloat.swift */; };
 		0D6A4F4229FF94A600527400 /* Int.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D6A4F4129FF94A600527400 /* Int.swift */; };
 		0D6A5D912A0833A900527400 /* MyProjectsContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D6A5D902A0833A900527400 /* MyProjectsContentView.swift */; };
+		0D6E2BF92EA6AE3D00F0D3C7 /* CaptionEditSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D6E2BF82EA6AE3D00F0D3C7 /* CaptionEditSheetView.swift */; };
 		0D7E979E29F38AF700BD7D0D /* DragAndDropProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7E979D29F38AF700BD7D0D /* DragAndDropProvider.swift */; };
 		0D7E97A029F40E7900BD7D0D /* Double.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7E979F29F40E7900BD7D0D /* Double.swift */; };
 		0D7FBEEB2A109A5600CC3559 /* VideoExportManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7FBEEA2A109A5600CC3559 /* VideoExportManager.swift */; };
-		0D8B0C272A1A4AB2001A2821 /* VideoEditorColorConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8B0C262A1A4AB2001A2821 /* VideoEditorColorConfigurationView.swift */; };
 		0D8B0C2B2A1A89F0001A2821 /* VideoEditorTextConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8B0C2A2A1A89F0001A2821 /* VideoEditorTextConfigurationView.swift */; };
 		0D8B0C2D2A1A8CC3001A2821 /* VideoEditorSettingsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8B0C2C2A1A8CC3001A2821 /* VideoEditorSettingsProvider.swift */; };
 		0D8B17E52A1CA3C4001A2821 /* video_editor_settings.json in Resources */ = {isa = PBXBuildFile; fileRef = 0D8B17E42A1CA3C4001A2821 /* video_editor_settings.json */; };
@@ -83,13 +79,9 @@
 		0D569CED2A1FEBCF00D3A360 /* CGColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGColor.swift; sourceTree = "<group>"; };
 		0D569D422A20024A00D3A360 /* MyProjects.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MyProjects.xcdatamodel; sourceTree = "<group>"; };
 		0D569D6C2A2004EF00D3A360 /* MyProject+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MyProject+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		0D569D6D2A2004EF00D3A360 /* BackgroundConfiguration+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BackgroundConfiguration+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		0D569D6E2A2004EF00D3A360 /* TextConfiguration+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TextConfiguration+CoreDataClass.swift"; sourceTree = "<group>"; };
 		0D569D6F2A2004EF00D3A360 /* TextConfiguration+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TextConfiguration+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		0D569D702A2004EF00D3A360 /* Caption+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Caption+CoreDataClass.swift"; sourceTree = "<group>"; };
-		0D569D712A2004EF00D3A360 /* ActiveTextConfiguration+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ActiveTextConfiguration+CoreDataClass.swift"; sourceTree = "<group>"; };
-		0D569D722A2004EF00D3A360 /* BackgroundConfiguration+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BackgroundConfiguration+CoreDataClass.swift"; sourceTree = "<group>"; };
-		0D569D732A2004F000D3A360 /* ActiveTextConfiguration+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ActiveTextConfiguration+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		0D569D742A2004F000D3A360 /* MyProject+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MyProject+CoreDataClass.swift"; sourceTree = "<group>"; };
 		0D569D752A2004F000D3A360 /* Caption+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Caption+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		0D56A6A82A2321F400D3A360 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
@@ -99,10 +91,10 @@
 		0D6A4F3F29FF949000527400 /* CGFloat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGFloat.swift; sourceTree = "<group>"; };
 		0D6A4F4129FF94A600527400 /* Int.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Int.swift; sourceTree = "<group>"; };
 		0D6A5D902A0833A900527400 /* MyProjectsContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyProjectsContentView.swift; sourceTree = "<group>"; };
+		0D6E2BF82EA6AE3D00F0D3C7 /* CaptionEditSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptionEditSheetView.swift; sourceTree = "<group>"; };
 		0D7E979D29F38AF700BD7D0D /* DragAndDropProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DragAndDropProvider.swift; sourceTree = "<group>"; };
 		0D7E979F29F40E7900BD7D0D /* Double.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Double.swift; sourceTree = "<group>"; };
 		0D7FBEEA2A109A5600CC3559 /* VideoExportManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoExportManager.swift; sourceTree = "<group>"; };
-		0D8B0C262A1A4AB2001A2821 /* VideoEditorColorConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoEditorColorConfigurationView.swift; sourceTree = "<group>"; };
 		0D8B0C2A2A1A89F0001A2821 /* VideoEditorTextConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoEditorTextConfigurationView.swift; sourceTree = "<group>"; };
 		0D8B0C2C2A1A8CC3001A2821 /* VideoEditorSettingsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoEditorSettingsProvider.swift; sourceTree = "<group>"; };
 		0D8B17E42A1CA3C4001A2821 /* video_editor_settings.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = video_editor_settings.json; sourceTree = "<group>"; };
@@ -168,6 +160,7 @@
 		0D6A4F3829FE471700527400 /* EditorCaption */ = {
 			isa = PBXGroup;
 			children = (
+				0D6E2BF82EA6AE3D00F0D3C7 /* CaptionEditSheetView.swift */,
 				0D6A4F3D29FF936700527400 /* CaptionItem.swift */,
 				0DE5CC1A29F090CF000408CC /* CaptionItemView.swift */,
 				0D6A4F3629FE467900527400 /* EditorCaptionView.swift */,
@@ -229,14 +222,6 @@
 			path = CaptionsConfigurationView;
 			sourceTree = "<group>";
 		};
-		0D8B0C242A1A4A76001A2821 /* ColorConfigurationView */ = {
-			isa = PBXGroup;
-			children = (
-				0D8B0C262A1A4AB2001A2821 /* VideoEditorColorConfigurationView.swift */,
-			);
-			path = ColorConfigurationView;
-			sourceTree = "<group>";
-		};
 		0D8B0C252A1A4A86001A2821 /* TextConfigurationView */ = {
 			isa = PBXGroup;
 			children = (
@@ -260,7 +245,6 @@
 				0D8B213D2A1DD837001A2821 /* VideoEditorCaptionConfig.swift */,
 				0DE5CC2229F095D1000408CC /* VideoEditorView.swift */,
 				0D8B0C252A1A4A86001A2821 /* TextConfigurationView */,
-				0D8B0C242A1A4A76001A2821 /* ColorConfigurationView */,
 				0D8B0C232A1A4A60001A2821 /* CaptionsConfigurationView */,
 				0D6A4F3C29FEA69700527400 /* EditorTime */,
 				0D6A4F3829FE471700527400 /* EditorCaption */,
@@ -367,10 +351,6 @@
 				0D569D752A2004F000D3A360 /* Caption+CoreDataProperties.swift */,
 				0D569D6E2A2004EF00D3A360 /* TextConfiguration+CoreDataClass.swift */,
 				0D569D6F2A2004EF00D3A360 /* TextConfiguration+CoreDataProperties.swift */,
-				0D569D722A2004EF00D3A360 /* BackgroundConfiguration+CoreDataClass.swift */,
-				0D569D6D2A2004EF00D3A360 /* BackgroundConfiguration+CoreDataProperties.swift */,
-				0D569D712A2004EF00D3A360 /* ActiveTextConfiguration+CoreDataClass.swift */,
-				0D569D732A2004F000D3A360 /* ActiveTextConfiguration+CoreDataProperties.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -525,11 +505,8 @@
 				0D6A5D912A0833A900527400 /* MyProjectsContentView.swift in Sources */,
 				0D569CEE2A1FEBCF00D3A360 /* CGColor.swift in Sources */,
 				0DE5CC1B29F090CF000408CC /* CaptionItemView.swift in Sources */,
-				0D569D7A2A2004F000D3A360 /* BackgroundConfiguration+CoreDataProperties.swift in Sources */,
-				0D8B0C272A1A4AB2001A2821 /* VideoEditorColorConfigurationView.swift in Sources */,
 				0D569D7C2A2004F000D3A360 /* Caption+CoreDataProperties.swift in Sources */,
 				0D6A4F3B29FEA63B00527400 /* VideoEditorTimeItemView.swift in Sources */,
-				0D569D762A2004F000D3A360 /* ActiveTextConfiguration+CoreDataClass.swift in Sources */,
 				10DF943929D0A8650017BE2B /* Image.swift in Sources */,
 				0D6A4F4229FF94A600527400 /* Int.swift in Sources */,
 				10DF942C29D071CB0017BE2B /* TimeInterval.swift in Sources */,
@@ -541,8 +518,8 @@
 				1021240029D20D9B00FF7238 /* Binding.swift in Sources */,
 				0D8B213C2A1D457B001A2821 /* Color.swift in Sources */,
 				0D6A4F3E29FF936700527400 /* CaptionItem.swift in Sources */,
+				0D6E2BF92EA6AE3D00F0D3C7 /* CaptionEditSheetView.swift in Sources */,
 				0DC05C7029F6ED19003CC8AD /* VideoPlayer.swift in Sources */,
-				0D569D7D2A2004F000D3A360 /* ActiveTextConfiguration+CoreDataProperties.swift in Sources */,
 				0DE5CC2329F095D1000408CC /* VideoEditorView.swift in Sources */,
 				0D569D782A2004F000D3A360 /* MyProject+CoreDataProperties.swift in Sources */,
 				0DC05C6629F5CD20003CC8AD /* MyProjectsProvider.swift in Sources */,
@@ -555,7 +532,6 @@
 				0D6A4F3729FE467900527400 /* EditorCaptionView.swift in Sources */,
 				8F2EF8F529CD9C7C007A0793 /* MyProjectView.swift in Sources */,
 				10DF942829D051A10017BE2B /* PickVideoView.swift in Sources */,
-				0D569D7E2A2004F000D3A360 /* BackgroundConfiguration+CoreDataClass.swift in Sources */,
 				10DF942029D044A00017BE2B /* Fonts.swift in Sources */,
 				8F2EF8F329CD9C7C007A0793 /* CaptionizeApp.swift in Sources */,
 				10DF942629D04DCD0017BE2B /* Colors.swift in Sources */,
@@ -715,7 +691,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Captionize/Preview Content\"";
-				DEVELOPMENT_TEAM = WZY67JFAWD;
+				DEVELOPMENT_TEAM = SRS4ZYX9NV;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Captionize/Info.plist;
@@ -746,7 +722,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Captionize/Preview Content\"";
-				DEVELOPMENT_TEAM = WZY67JFAWD;
+				DEVELOPMENT_TEAM = SRS4ZYX9NV;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Captionize/Info.plist;

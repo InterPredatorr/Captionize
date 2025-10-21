@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct CaptionItemView: View {
     @ObservedObject var viewModel: VideoEditorViewModel
@@ -49,7 +50,7 @@ struct CaptionItemView: View {
                 .multilineTextAlignment(.leading)
                 .font(Font.roboto(size: 14))
                 .lineLimit(Constants.VECap.textLineLimit)
-                .foregroundColor(.white)
+                .foregroundColor(colorFromHex(item.textColorHex, default: .white))
             Spacer()
             Button {} label: {
                 Image(systemName: "chevron.compact.right")
@@ -82,9 +83,14 @@ struct CaptionItemView: View {
         }
         .frame(width: item.width)
         .frame(maxHeight: .infinity)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            viewModel.selectedCaptionId = item.id
+            viewModel.isShowingCaptionSheet = true
+        }
         .overlay(RoundedRectangle(cornerRadius: Constants.VECap.radius)
             .stroke(Colors.appClayBlack, lineWidth: 2))
-        .background(Colors.appPurple)
+        .background(colorFromHex(item.backgroundColorHex, default: Colors.appPurple))
         .cornerRadius(Constants.VECap.radius)
         
     }
@@ -132,6 +138,11 @@ struct CaptionItemView: View {
             return
         }
         viewModel.playerConfig.currentTime += value.translation.width > 0 ? changePerFrame : -changePerFrame
+    }
+    
+    private func colorFromHex(_ hex: String?, default defaultColor: Color) -> Color {
+        guard let cg = CGColor.fromHexString(hex) else { return defaultColor }
+        return Color(UIColor(cgColor: cg))
     }
 }
 

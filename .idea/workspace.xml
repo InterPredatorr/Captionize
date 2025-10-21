@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="50e1ae4f-bd54-401d-ac9a-0f6db91d5f8a" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Captionize/Extensions/View.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Captionize.xcodeproj/project.pbxproj" beforeDir="false" afterPath="$PROJECT_DIR$/Captionize.xcodeproj/project.pbxproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Captionize.xcodeproj/project.xcworkspace/xcuserdata/sevaktadevosyan.xcuserdatad/UserInterfaceState.xcuserstate" beforeDir="false" afterPath="$PROJECT_DIR$/Captionize.xcodeproj/project.xcworkspace/xcuserdata/sevaktadevosyan.xcuserdatad/UserInterfaceState.xcuserstate" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Captionize/App/CaptionizeApp.swift" beforeDir="false" afterPath="$PROJECT_DIR$/Captionize/App/CaptionizeApp.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Captionize/Constants/Constants.swift" beforeDir="false" afterPath="$PROJECT_DIR$/Captionize/Constants/Constants.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Captionize/Entity/VideoLibrary.swift" beforeDir="false" afterPath="$PROJECT_DIR$/Captionize/Entity/VideoLibrary.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Captionize/Model/Projects.xcdatamodeld/MyProjects.xcdatamodel/contents" beforeDir="false" afterPath="$PROJECT_DIR$/Captionize/Model/Projects.xcdatamodeld/MyProjects.xcdatamodel/contents" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Captionize/Views/MyProjects/MyProjectView.swift" beforeDir="false" afterPath="$PROJECT_DIR$/Captionize/Views/MyProjects/MyProjectView.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Captionize/Views/MyProjects/MyProjectsContentView.swift" beforeDir="false" afterPath="$PROJECT_DIR$/Captionize/Views/MyProjects/MyProjectsContentView.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Captionize/Views/MyProjects/MyProjectsViewModel.swift" beforeDir="false" afterPath="$PROJECT_DIR$/Captionize/Views/MyProjects/MyProjectsViewModel.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Captionize/Views/MyProjects/ProjectItemView.swift" beforeDir="false" afterPath="$PROJECT_DIR$/Captionize/Views/MyProjects/ProjectItemView.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Captionize/Views/PickVideo/PickVideoView.swift" beforeDir="false" afterPath="$PROJECT_DIR$/Captionize/Views/PickVideo/PickVideoView.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Captionize/Views/VideoEditor/Editor/CaptionsConfigurationView/VideoEditorConfigurationView.swift" beforeDir="false" afterPath="$PROJECT_DIR$/Captionize/Views/VideoEditor/Editor/CaptionsConfigurationView/VideoEditorConfigurationView.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Captionize/Views/VideoEditor/Editor/ColorConfigurationView/VideoEditorColorConfigurationView.swift" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Captionize/Views/VideoEditor/Editor/EditorCaption/CaptionItem.swift" beforeDir="false" afterPath="$PROJECT_DIR$/Captionize/Views/VideoEditor/Editor/EditorCaption/CaptionItem.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Captionize/Views/VideoEditor/Editor/EditorCaption/CaptionItemView.swift" beforeDir="false" afterPath="$PROJECT_DIR$/Captionize/Views/VideoEditor/Editor/EditorCaption/CaptionItemView.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Captionize/Views/VideoEditor/Editor/VideoEditorCaptionConfig.swift" beforeDir="false" afterPath="$PROJECT_DIR$/Captionize/Views/VideoEditor/Editor/VideoEditorCaptionConfig.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Captionize/Views/VideoEditor/Editor/VideoEditorSettingsProvider.swift" beforeDir="false" afterPath="$PROJECT_DIR$/Captionize/Views/VideoEditor/Editor/VideoEditorSettingsProvider.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Captionize/Views/VideoEditor/Editor/VideoEditorView.swift" beforeDir="false" afterPath="$PROJECT_DIR$/Captionize/Views/VideoEditor/Editor/VideoEditorView.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Captionize/Views/VideoEditor/Player/VideoPlayer.swift" beforeDir="false" afterPath="$PROJECT_DIR$/Captionize/Views/VideoEditor/Player/VideoPlayer.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Captionize/Views/VideoEditor/Player/VideoPlayerView.swift" beforeDir="false" afterPath="$PROJECT_DIR$/Captionize/Views/VideoEditor/Player/VideoPlayerView.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Captionize/Views/VideoEditor/VideoEditorContainerView.swift" beforeDir="false" afterPath="$PROJECT_DIR$/Captionize/Views/VideoEditor/VideoEditorContainerView.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Captionize/Views/VideoEditor/VideoEditorViewModel.swift" beforeDir="false" afterPath="$PROJECT_DIR$/Captionize/Views/VideoEditor/VideoEditorViewModel.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Captionize/Views/VideoEditor/VideoExportManager.swift" beforeDir="false" afterPath="$PROJECT_DIR$/Captionize/Views/VideoEditor/VideoExportManager.swift" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="iphonesimulator_72318C9D-6F4F-49B9-902C-7C8AE8FB0A48" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectApplicationVersion">
+    <option name="ide" value="IDEA" />
+    <option name="majorVersion" value="2025" />
+    <option name="minorVersion" value="2.3" />
+    <option name="productBranch" value="Classic" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
+  <component name="ProjectId" id="34FqaTJV1XGByq3K8mgMluh6QIU" />
+  <component name="ProjectViewState">
+    <option name="autoscrollFromSource" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "cidr.known.project.marker": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "536ba69d",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/sevaktadevosyan/Documents/GitHub/Captionize",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager">
+    <configuration default="true" type="Application" factoryName="Application">
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.26830.84" />
+        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-IU-252.26830.84" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="50e1ae4f-bd54-401d-ac9a-0f6db91d5f8a" name="Changes" comment="" />
+      <created>1760819731064</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1760819731064</updated>
+      <workItem from="1760819733319" duration="632000" />
+      <workItem from="1760860347086" duration="14062000" />
+      <workItem from="1760984615454" duration="8860000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="XcodeBuildConfigurationMetadata">
+    <buildConfigurationMetadataMap>
+      <entry key="Xcode Application.Captionize">
+        <BuildConfigurationMetadata buildDestinationId="iphonesimulator_72318C9D-6F4F-49B9-902C-7C8AE8FB0A48" />
+      </entry>
+    </buildConfigurationMetadataMap>
+  </component>
+</project>

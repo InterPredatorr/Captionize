@@ -45,6 +45,7 @@ struct VideoPlayerView: View {
                 viewModel.playerConfig.player.seek(to: .zero)
                 viewModel.playerConfig.player.pause()
                 viewModel.editorStates.isPlaying = false
+                viewModel.editorStates.isAutoScrolling = false
             }
         }
         .onDisappear {
