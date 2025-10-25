@@ -10,7 +10,8 @@ import PhotosUI
 
 struct PickVideoView: View {
     
-    @StateObject var viewModel: PickVideoViewModel
+    let cardWidth = (UIScreen.main.bounds.size.width - 40) / 3
+    @EnvironmentObject private var viewModel: PickVideoViewModel
     @Environment(\.presentationMode) var presentationMode
     
     var open: ((Video) -> ())?
@@ -90,7 +91,7 @@ struct PickVideoView: View {
     
     var videoGrid: some View {
         ScrollView(showsIndicators: false) {
-            LazyVGrid(columns: videoGridLayout) {
+            LazyVGrid(columns: videoGridLayout, spacing: 8) {
                 ForEach(viewModel.selectedAlbum?.videos ?? [], id: \.asset.localIdentifier) { video in
                     videoGridItem(video)
                 }
@@ -103,7 +104,9 @@ struct PickVideoView: View {
         ZStack {
             Image(uiImage: video.thumbnail!)
                 .resizable()
-                .aspectRatio(1, contentMode: .fit)
+                .scaledToFill()
+                .frame(width: cardWidth, height: cardWidth)
+                .clipped()
                 .cornerRadius(12)
             ZStack {
                 VStack {
@@ -121,7 +124,6 @@ struct PickVideoView: View {
                 }
             }
         }
-        .padding(2)
         .onTapGesture {
             self.open?(video)
             self.dismiss()
@@ -135,11 +137,5 @@ struct PickVideoView: View {
                 .font(.roboto(size: 12, weight: .regular))
             Spacer()
         }
-    }
-}
-
-struct PickVideoView_Previews: PreviewProvider {
-    static var previews: some View {
-        PickVideoView(viewModel: .init(videoLibrary: DefaultVideoLibrary()))
     }
 }

@@ -64,6 +64,10 @@
         ],
         "alignments": [
             {
+              "iconName": "text.justify",
+              "alignment": 3
+            },
+            {
                 "iconName": "text.alignleft",
                 "alignment": 0
             },
@@ -78,9 +82,6 @@
         ],
         "capitalizationTypes": [
             {
-                "type": "--"
-            },
-            {
                 "type": "AB"
             },
             {
@@ -92,7 +93,7 @@
         ],
         "textSizeConfig": {
             "currentSize": 15.0,
-            "maxSize": 60.0,
+            "maxSize": 28.0,
             "minSize": 5.0
         }
     }

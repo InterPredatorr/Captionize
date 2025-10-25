@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct ProjectItemView: View {
+    
+    let cardWidth = (UIScreen.main.bounds.size.width - 50) / 2
     @Environment(\.managedObjectContext) var moc
     @ObservedObject var viewModel: MyProjectsViewModel
     @Binding var project: MyProject
@@ -19,8 +21,10 @@ struct ProjectItemView: View {
         ZStack {
             Image(uiImage: video?.thumbnail ?? UIImage(systemName: "photo.fill")!)
                 .resizable()
-                .aspectRatio(1, contentMode: .fill)
-                .cornerRadius(10)
+                .scaledToFill()
+                .frame(width: cardWidth, height: cardWidth)
+                .clipped()
+                .cornerRadius(12)
             VStack {
                 Spacer()
                 HStack {

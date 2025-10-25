@@ -19,8 +19,6 @@ extension MyProject {
     @NSManaged public var assetId: String?
     @NSManaged public var captions: NSSet?
     @NSManaged public var textConfig: TextConfiguration?
-    @NSManaged public var backgroundConfig: BackgroundConfiguration?
-    @NSManaged public var activeTextConfig: ActiveTextConfiguration?
 
 }
 

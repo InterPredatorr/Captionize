@@ -26,7 +26,10 @@ struct Constants {
     struct VPCap { // Video Player Caption
         static let captionPadding = 30.0
         static let captionheight = 50.0
+        // High timescale for precise seeks/exports
         static let timescale: CMTimeScale = 40000
+        // UI tick frequency for playhead updates (throttles scroll/availability checks)
+        static let uiTickPerSecond: CMTimeScale = 15
     }
     struct VETextSettings {
         static let cellCornerRadius = 16.0

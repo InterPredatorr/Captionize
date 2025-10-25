@@ -11,14 +11,19 @@ import CoreData
 @main
 struct CaptionizeApp: App {
     
+    @StateObject private var viewModel = MyProjectsViewModel()
+    @StateObject private var pickerViewModel = PickVideoViewModel(videoLibrary: DefaultVideoLibrary())
+    
     var body: some Scene {
         WindowGroup {
             NavigationStack {
-                let viewModel = MyProjectsViewModel()
-                MyProjectView(viewModel: viewModel)
+                
+                MyProjectView()
                     .environment(\.locale, .init(identifier: "hy"))
                     .environment(\.managedObjectContext, MyProjectsProvider.shared.viewContext)
-                    .preferredColorScheme(.dark) // Only supporting dark mode.
+                    .environmentObject(viewModel)
+                    .environmentObject(pickerViewModel)
+                    .preferredColorScheme(.dark)
             }
             .accentColor(.white)
         }

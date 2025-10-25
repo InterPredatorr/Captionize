@@ -22,6 +22,14 @@ struct VideoEditorConfigurationView: View {
             Spacer().frame(height: 20)
             addAndRemoveButtons
         }
+        .sheet(isPresented: $viewModel.isShowingCaptionSheet) {
+            if let idx = viewModel.captionsConfig.items.firstIndex(where: { $0.id == viewModel.selectedCaptionId }) {
+                CaptionEditSheetView(item: $viewModel.captionsConfig.items[idx])
+            } else {
+                Text("No caption selected")
+                    .padding()
+            }
+        }
     }
     
     var baseView: some View {
@@ -55,9 +63,6 @@ struct VideoEditorConfigurationView: View {
                         value: -1 * proxy.frame(in: .named("zScreen")).origin.x
                     )
                 })
-                .gesture(DragGesture().onChanged { _ in
-                    viewModel.editorStates.isAutoScrolling = false
-                })
                 .onPreferenceChange(ViewWidthKeyScreen.self) {
                     viewModel.checkAvailibility()
                     viewModel.checkCaptionText()
@@ -70,6 +75,19 @@ struct VideoEditorConfigurationView: View {
             .coordinateSpace(name: "zScreen")
             .frame(height: Constants.videoEditorHeight)
         }
+//        .simultaneousGesture(
+//            DragGesture()
+//                .onChanged { _ in
+//                    if viewModel.editorStates.isAutoScrolling {
+//                        viewModel.editorStates.isAutoScrolling = false
+//                    }
+//                }
+//                .onEnded { _ in
+//                    if viewModel.editorStates.isPlaying {
+//                        viewModel.editorStates.isAutoScrolling = true
+//                    }
+//                }
+//        )
     }
     
     var currentTimeIndicatorView: some View {

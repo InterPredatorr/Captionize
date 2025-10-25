@@ -10,7 +10,7 @@ import Photos
 
 struct MyProjectsContentView: View {
     @Environment(\.managedObjectContext) var moc
-    @ObservedObject var viewModel: MyProjectsViewModel
+    @EnvironmentObject private var viewModel: MyProjectsViewModel
     @State var showAlert = false
     
     private let projectsGridLayout: [GridItem] = [GridItem(.flexible()),

@@ -6,132 +6,161 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct CaptionItemView: View {
     @ObservedObject var viewModel: VideoEditorViewModel
     @Binding var item: CaptionItem
     @State private var timer: Timer?
     @State private var isStartedTimer = false
-    @State private var isAbleToScroll = false
-    
+    @State private var leftButtonGlobalX: CGFloat = 0
+    @State private var rightButtonGlobalX: CGFloat = 0
+    @State private var isDraggingLeft = false
+    @State private var isDraggingRight = false
+
     var body: some View {
         HStack {
-            Button {} label: {
-                Spacer().frame(width: Constants.VECap.buttonPadding)
-                Image(systemName: "chevron.compact.left")
+            GeometryReader { geo in
+                VStack {
+                    Spacer()
+                    Button {} label: {
+                        Spacer().frame(width: Constants.VECap.buttonPadding)
+                        Image(systemName: "chevron.compact.left")
+                    }
+                    .frame(width: Constants.VECap.buttonWidth)
+                    .highPriorityGesture(DragGesture(minimumDistance: 0,
+                                                     coordinateSpace: CoordinateSpace.named("captionSpace"))
+                        .onChanged({ value in
+                            item.side = .left
+                            self.viewModel.udpatePoints(for: item, x: value.location.x)
+
+                            // Track global position
+                            isDraggingLeft = true
+                            leftButtonGlobalX = geo.frame(in: .global).midX
+                        })
+                            .onEnded({ _ in
+                                item.isChanging = false
+                                viewModel.checkAvailibility()
+                                simpleSuccess(style: .soft)
+                                isDraggingLeft = false
+                                stopAutoScroll()
+                            })
+                    )
+                    Spacer()
+                }
+                .onChange(of: leftButtonGlobalX) { newX in
+                    if isDraggingLeft {
+                        checkEdgePosition(x: newX)
+                    }
+                }
             }
             .frame(width: Constants.VECap.buttonWidth)
-            .simultaneousGesture(DragGesture(minimumDistance: 0, coordinateSpace: .global)
-                .onChanged({ value in
-                    checkEdge(with: value)
-                    if isAtEdge(value: value.startLocation.x) && !isAtEdge(value: value.location.x) {
-                        isAbleToScroll = true
-                    }
-                })
-                    .onEnded({ _ in
-                        handleGestureEnd()
-                    })
-            )
-            .simultaneousGesture(DragGesture(minimumDistance: 0,
-                                             coordinateSpace: CoordinateSpace.named("captionSpace"))
-                .onChanged({ value in
-                    item.side = .left
-                    self.viewModel.udpatePoints(for: item, x: value.location.x)
-                })
-                    .onEnded({ _ in
-                        item.isChanging = false
-                        viewModel.checkAvailibility()
-                        simpleSuccess(style: .soft)
-                    })
-            )
             Spacer()
             Text(item.captionText)
                 .multilineTextAlignment(.leading)
                 .font(Font.roboto(size: 14))
                 .lineLimit(Constants.VECap.textLineLimit)
-                .foregroundColor(.white)
+                .foregroundColor(colorFromHex(item.textColorHex, default: .white))
             Spacer()
-            Button {} label: {
-                Image(systemName: "chevron.compact.right")
-                Spacer().frame(width: Constants.VECap.buttonPadding)
+            GeometryReader { geo in
+                VStack {
+                    Spacer()
+                    Button {} label: {
+                        Image(systemName: "chevron.compact.right")
+                        Spacer().frame(width: Constants.VECap.buttonPadding)
+                    }
+                    .frame(width: Constants.VECap.buttonWidth)
+                    .highPriorityGesture(DragGesture(minimumDistance: 0,
+                                                     coordinateSpace: CoordinateSpace.named("captionSpace"))
+                        .onChanged({ value in
+                            item.side = .right
+                            self.viewModel.udpatePoints(for: item, x: value.location.x)
+
+                            // Track global position
+                            isDraggingRight = true
+                            rightButtonGlobalX = geo.frame(in: .global).midX
+                        })
+                            .onEnded({ _ in
+                                item.isChanging = false
+                                viewModel.checkAvailibility()
+                                simpleSuccess(style: .soft)
+                                isDraggingRight = false
+                                stopAutoScroll()
+                            })
+                    )
+                    Spacer()
+                }
+                .onChange(of: rightButtonGlobalX) { newX in
+                    if isDraggingRight {
+                        checkEdgePosition(x: newX)
+                    }
+                }
             }
             .frame(width: Constants.VECap.buttonWidth)
-            .simultaneousGesture(DragGesture(minimumDistance: 0, coordinateSpace: .global)
-                .onChanged({ value in
-                    checkEdge(with: value)
-                    if isAtEdge(value: value.startLocation.x) && !isAtEdge(value: value.location.x) {
-                        isAbleToScroll = true
-                    }
-                })
-                    .onEnded({ _ in
-                        handleGestureEnd()
-                    })
-            )
-            .simultaneousGesture(DragGesture(minimumDistance: 0,
-                                             coordinateSpace: CoordinateSpace.named("captionSpace"))
-                .onChanged({ value in
-                    item.side = .right
-                    self.viewModel.udpatePoints(for: item, x: value.location.x)
-                })
-                    .onEnded({ _ in
-                        item.isChanging = false
-                        viewModel.checkAvailibility()
-                        simpleSuccess(style: .soft)
-                    })
-            )
         }
         .frame(width: item.width)
         .frame(maxHeight: .infinity)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            viewModel.selectedCaptionId = item.id
+            viewModel.isShowingCaptionSheet = true
+        }
         .overlay(RoundedRectangle(cornerRadius: Constants.VECap.radius)
             .stroke(Colors.appClayBlack, lineWidth: 2))
-        .background(Colors.appPurple)
+        .background(colorFromHex(item.backgroundColorHex, default: Colors.appPurple))
         .cornerRadius(Constants.VECap.radius)
         
     }
     
-    private func handleGestureEnd() {
+    private func stopAutoScroll() {
         timer?.invalidate()
+        timer = nil
         isStartedTimer = false
-        isAbleToScroll = false
         viewModel.checkAvailibility()
         viewModel.editorStates.isAutoScrolling = false
     }
-    
+
     private func simpleSuccess(style: UIImpactFeedbackGenerator.FeedbackStyle) {
         let generator = UIImpactFeedbackGenerator(style: style)
         generator.impactOccurred()
     }
-    
-    private func checkEdge(with value: DragGesture.Value) {
-        if (isAtEdge(value: value.location.x) && !isAtEdge(value: value.startLocation.x)) || (isAbleToScroll && isAtEdge(value: value.location.x)) {
+
+    private func checkEdgePosition(x: CGFloat) {
+        let leftEdge = UIScreen.screenWidth.percentageWith(percent: 10)
+        let rightEdge = UIScreen.screenWidth.percentageWith(percent: 90)
+
+        let isAtLeftEdge = x < leftEdge
+        let isAtRightEdge = x > rightEdge
+
+        if isAtLeftEdge || isAtRightEdge {
             if !isStartedTimer {
-                timer = Timer.scheduledTimer(withTimeInterval: 0.03, repeats: true) { _ in
-                    handleScreenEdgeScrolling(with: value)
+                // Smoother scrolling: 60 FPS (update every ~0.0167 seconds)
+                timer = Timer.scheduledTimer(withTimeInterval: 1.0 / 60.0, repeats: true) { [self] _ in
+                    handleAutoScroll(isLeft: isAtLeftEdge)
                 }
                 viewModel.editorStates.isAutoScrolling = true
                 isStartedTimer = true
             }
         } else {
-            timer?.invalidate()
-            isStartedTimer = false
+            if isStartedTimer {
+                stopAutoScroll()
+            }
+        }
+    }
+
+    private func handleAutoScroll(isLeft: Bool) {
+        // Scroll at ~2 seconds per second of video = smoother movement
+        let changePerFrame: Double = 2.0 / 60.0
+        if isLeft {
+            viewModel.playerConfig.currentTime -= changePerFrame
+        } else {
+            viewModel.playerConfig.currentTime += changePerFrame
         }
     }
     
-    private func isAtEdge(value: CGFloat) -> Bool {
-        return !(UIScreen.screenWidth.percentageWith(percent: 10)...UIScreen.screenWidth.percentageWith(percent: 90) ~= value)
-    }
-                          
-    private func handleScreenEdgeScrolling(with value: DragGesture.Value) {
-        let changePerFrame: Double = 1 / 15
-        if isAbleToScroll {
-            if value.location.x > UIScreen.screenWidth.percentageWith(percent: 90) {
-                viewModel.playerConfig.currentTime += changePerFrame
-            } else if value.location.x < UIScreen.screenWidth.percentageWith(percent: 10) {
-                viewModel.playerConfig.currentTime -= changePerFrame
-            }
-            return
-        }
-        viewModel.playerConfig.currentTime += value.translation.width > 0 ? changePerFrame : -changePerFrame
+    private func colorFromHex(_ hex: String?, default defaultColor: Color) -> Color {
+        guard let cg = CGColor.fromHexString(hex) else { return defaultColor }
+        return Color(UIColor(cgColor: cg))
     }
 }
 

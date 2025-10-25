@@ -10,7 +10,8 @@ import CoreData
 
 struct MyProjectView: View {
     @Environment(\.managedObjectContext) var moc
-    @ObservedObject var viewModel: MyProjectsViewModel
+    @EnvironmentObject private var viewModel: MyProjectsViewModel
+    @EnvironmentObject private var pickerViewModel: MyProjectsViewModel
 
     var body: some View {
         ZStack {
@@ -20,7 +21,7 @@ struct MyProjectView: View {
                 topView
                 Spacer()
                 if !viewModel.myProjects.isEmpty {
-                    MyProjectsContentView(viewModel: viewModel)
+                    MyProjectsContentView()
                         .environment(\.managedObjectContext, moc)
                 } else {
                     noProjectView
@@ -29,9 +30,10 @@ struct MyProjectView: View {
             }
         }
         .fullScreenCover(isPresented: $viewModel.openPickVideoView) {
-            PickVideoView(viewModel: .init(videoLibrary: DefaultVideoLibrary())) { video in
+            PickVideoView { video in
                     viewModel.selectedVideo = video
             }
+            .environmentObject(pickerViewModel)
         }
         .navigationDestination(for: $viewModel.selectedVideo) { video in
             VideoEditorContainerView(viewModel: viewModel.getVideoEditorViewModel(with: video, captions: []),
