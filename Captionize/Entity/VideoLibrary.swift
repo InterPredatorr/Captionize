@@ -10,11 +10,35 @@ import PhotosUI
 
 protocol VideoLibrary {
     func getVideoAlbums(_ completionHandler: @escaping (([VideoAlbum]) -> ()))
+    func checkPhotoLibraryPermission(completion: @escaping (PHAuthorizationStatus) -> Void)
+    func requestPhotoLibraryPermission(completion: @escaping (PHAuthorizationStatus) -> Void)
 }
 
 class DefaultVideoLibrary: VideoLibrary {
-    
+
+    func checkPhotoLibraryPermission(completion: @escaping (PHAuthorizationStatus) -> Void) {
+        let status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
+        completion(status)
+    }
+
+    func requestPhotoLibraryPermission(completion: @escaping (PHAuthorizationStatus) -> Void) {
+        PHPhotoLibrary.requestAuthorization(for: .readWrite) { status in
+            DispatchQueue.main.async {
+                completion(status)
+            }
+        }
+    }
+
     func getVideoAlbums(_ completionHandler: @escaping (([VideoAlbum]) -> ())) {
+        // Check permission first
+        let status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
+
+        guard status == .authorized || status == .limited else {
+            // Return empty array if no permission
+            completionHandler([])
+            return
+        }
+
         let allAlbums = fetchAlbumsWhichHasVideo()
         
         if allAlbums.isEmpty {

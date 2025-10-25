@@ -28,18 +28,26 @@ struct PickVideoView: View {
                 ProgressView("Loading videos...")
             } else if let errorMessage = viewModel.errorMessage {
                 VStack(spacing: 20) {
-                    Image(systemName: "exclamationmark.triangle")
-                        .font(.system(size: 50))
+                    Image(systemName: "photo.on.rectangle.angled")
+                        .font(.system(size: 60))
                         .foregroundColor(.orange)
                     Text(errorMessage)
                         .multilineTextAlignment(.center)
                         .padding()
-                    Button("Retry") {
-                        Task {
-                            await viewModel.fetchVideoAlbums()
+
+                    if viewModel.authorizationStatus == .denied || viewModel.authorizationStatus == .restricted {
+                        Button("Open Settings") {
+                            viewModel.openSettings()
                         }
+                        .buttonStyle(.borderedProminent)
+                    } else {
+                        Button("Retry") {
+                            Task {
+                                await viewModel.checkPermissionAndFetch()
+                            }
+                        }
+                        .buttonStyle(.bordered)
                     }
-                    .buttonStyle(.bordered)
                 }
             } else {
                 VStack {
