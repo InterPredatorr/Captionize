@@ -26,6 +26,8 @@ struct VideoPlayer: UIViewControllerRepresentable {
         if context.coordinator.controller.player !== viewModel.playerConfig.player {
             context.coordinator.controller.player = viewModel.playerConfig.player
         }
+        // Ensure text detection remains disabled
+        uiViewController.allowsVideoFrameAnalysis = false
     }
 
     func makeCoordinator() -> Coordinator {
@@ -61,6 +63,7 @@ extension VideoPlayer {
             controller.player = viewModel.playerConfig.player
             controller.showsPlaybackControls = false
             controller.videoGravity = .resizeAspect
+            controller.allowsVideoFrameAnalysis = false
         }
 
         private func setupCaptionLabel() {
