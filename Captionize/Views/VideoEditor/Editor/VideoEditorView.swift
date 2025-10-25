@@ -20,9 +20,12 @@ struct VideoEditorView: View {
             }
             .onChange(of: viewModel.captionsConfig.selectedEditor, perform: { _ in
                 viewModel.playerConfig.player.pause()
+                viewModel.editorStates.isPlaying = false
+                viewModel.editorStates.isAutoScrolling = false
             })
             .pickerStyle(.segmented)
             .labelsHidden()
+            .padding(.horizontal, Constants.VETextSettings.itemsSpacing / 2)
             switch viewModel.captionsConfig.selectedEditor {
             case .text:
                 VideoEditorTextConfigurationView(viewModel: viewModel)

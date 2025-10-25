@@ -96,6 +96,7 @@ extension VideoEditorViewModel {
     private func createPlayer(from asset: AVAsset) {
         let item = AVPlayerItem(asset: asset)
         playerConfig.player = AVPlayer(playerItem: item)
+        playerConfig.playerLayer.allowsVideoFrameAnalysis = false
         self.setPlayerAudio()
         self.updateProperties(with: playerConfig.player)
         self.setupConfigs()
@@ -104,7 +105,7 @@ extension VideoEditorViewModel {
     
     private func requestPlayer(from asset: PHAsset) -> AnyPublisher<AVAsset, Error> {
         let options = PHVideoRequestOptions()
-        options.deliveryMode = .fastFormat
+        options.deliveryMode = .highQualityFormat
         options.isNetworkAccessAllowed = true
         options.version = .current
         return Future<AVAsset, Error> { promise in
@@ -228,6 +229,9 @@ extension VideoEditorViewModel {
     }
     
     func checkAvailibility() {
+        // The timeline UI has a 0.5 second offset where the center indicator (playhead)
+        // represents currentTime + 0.5. Both the timeline and video player caption display
+        // use this same offset to keep everything in sync.
         let halfOfSecond = 0.5
         let minWidth = Constants.VECap.minWidth
         let endOfTime = Double(captionsConfig.seconds.count) * Constants.VECap.secondToPoint

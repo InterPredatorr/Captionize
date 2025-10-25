@@ -40,12 +40,12 @@ struct VideoEditorTextConfigurationView: View {
     
     var fontSizePickerView: some View {
         HStack {
-            Image(systemName: "arrow.up.and.down.and.arrow.left.and.right")
-                .frame(width: Constants.VETextSettings.constantSizedCellWidth,
-                       height: Constants.VETextSettings.cellHeight)
-                .background(Colors.appClayBlack)
-                .cornerRadius(Constants.VETextSettings.cellCornerRadius)
-            Divider().frame(width: 2)
+//            Image(systemName: "arrow.up.and.down.and.arrow.left.and.right")
+//                .frame(width: Constants.VETextSettings.constantSizedCellWidth,
+//                       height: Constants.VETextSettings.cellHeight)
+//                .background(Colors.appClayBlack)
+//                .cornerRadius(Constants.VETextSettings.cellCornerRadius)
+//            Divider().frame(width: 2)
             HStack {
                 Image(systemName: "a")
                     .resizable()
@@ -135,7 +135,7 @@ struct CaptionCapitalizationSettingView: View {
         .frame(maxWidth: .infinity)
         .background(item.isSelected ? Color.blue : Colors.appClayBlack)
         .cornerRadius(Constants.VETextSettings.cellCornerRadius,
-                      corners: item.type == .none ? [.topLeft,
+                      corners: item.type == .AB ? [.topLeft,
                                                      .bottomLeft] : item.type == .ab ? [.topRight,
                                                                                                 .bottomRight] : [])
     }
@@ -168,8 +168,8 @@ struct CaptionTextAlignmentSettingView: View {
         .frame(maxWidth: .infinity)
         .background(item.isSelected ? Color.blue : Colors.appClayBlack)
         .cornerRadius(Constants.VETextSettings.cellCornerRadius,
-                      corners: alignment == .left ? [.topLeft,
-                                                     .bottomLeft] : alignment == .center ? [] : [.topRight,
+                      corners: alignment == .justified ? [.topLeft,
+                                                          .bottomLeft] : alignment == .center || alignment == .left ? [] : [.topRight,
                                                                                                  .bottomRight])
         .onAppear {
             alignment = NSTextAlignment(rawValue: item.alignment) ?? .center

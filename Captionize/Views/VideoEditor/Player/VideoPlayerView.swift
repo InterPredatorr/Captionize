@@ -16,9 +16,7 @@ struct VideoPlayerView: View {
         GeometryReader { reader in
             VStack(spacing: 10) {
                 ZStack {
-                    if viewModel.editorStates.isLoaded {
-                        VideoPlayer(viewModel: viewModel)
-                    }
+                    VideoPlayer(viewModel: viewModel)
                     if !viewModel.editorStates.isPlaying {
                         Button {
                             viewModel.editorStates.isPlaying = true

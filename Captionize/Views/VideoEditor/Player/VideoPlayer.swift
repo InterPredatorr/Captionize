@@ -8,176 +8,266 @@
 import SwiftUI
 import AVKit
 import UIKit
+import Combine
 
 struct VideoPlayer: UIViewControllerRepresentable {
-    
+
     @ObservedObject var viewModel: VideoEditorViewModel
-    @State var textLabel = UILabel()
-    @State var videoRect = CGRect.zero
+
     //MARK: - View Setup
-    
+
     func makeUIViewController(context: UIViewControllerRepresentableContext<VideoPlayer>) -> AVPlayerViewController {
         return context.coordinator.controller
     }
-    
+
     func updateUIViewController(_ uiViewController: AVPlayerViewController,
                                 context: UIViewControllerRepresentableContext<VideoPlayer>) {
-        DispatchQueue.main.async {
-            updateLabelConfig()
+        // Update player reference if it changed
+        if context.coordinator.controller.player !== viewModel.playerConfig.player {
+            context.coordinator.controller.player = viewModel.playerConfig.player
         }
     }
 
     func makeCoordinator() -> Coordinator {
-        setupLabel()
-        return Coordinator(self)
-    }
-    
-    private func setupLabel() {
-        textLabel.numberOfLines = 10
-    }
-    
-    private func updateLabelConfig() {
-        let config = viewModel.captionsConfig.captionConfig
-        textLabel.text = viewModel.playerConfig.captionText
-        textLabel.isHidden = viewModel.playerConfig.captionText.isEmpty
-        textLabel.font = config.text.font
-        textLabel.font = textLabel.font.withSize(config.text.fontSize)
-        textLabel.textAlignment = config.text.alignment
-        // Use only per-caption colors; default to white/appPurple if unset
-        let currentTime = viewModel.playerConfig.currentTime + 0.5
-        let activeItem = viewModel.captionsConfig.items.first(where: { $0.startPoint.toSeconds...$0.endPoint.toSeconds ~= currentTime })
-        let defaultTextCG = UIColor.white.cgColor
-        let ap = Colors.appPurple.components
-        let defaultBgCG = UIColor(red: ap.red, green: ap.green, blue: ap.blue, alpha: ap.opacity).cgColor
-        let textCG = CGColor.fromHexString(activeItem?.textColorHex) ?? defaultTextCG
-        let bgCG = CGColor.fromHexString(activeItem?.backgroundColorHex) ?? defaultBgCG
-        textLabel.backgroundColor = UIColor(cgColor: bgCG)
-        textLabel.textColor = UIColor(cgColor: textCG)
-        
-        textLabel.frame.size.width = videoRect.width.percentageWith(percent: 80)
-        textLabel.sizeToFit()
-        let captionHeight = videoRect.height.percentageWith(percent: 20)
-        if textLabel.frame.height > captionHeight {
-            textLabel.frame.size.height = captionHeight
-        }
-        if let item = activeItem, let px = item.positionX, let py = item.positionY {
-            let halfW = textLabel.frame.width / 2
-            let halfH = textLabel.frame.height / 2
-            var centerX = videoRect.minX + CGFloat(px) * videoRect.width
-            var centerY = videoRect.minY + CGFloat(py) * videoRect.height
-            // Clamp within bounds
-            centerX = min(max(centerX, videoRect.minX + halfW), videoRect.maxX - halfW)
-            centerY = min(max(centerY, videoRect.minY + halfH), videoRect.maxY - halfH)
-            textLabel.layer.position = CGPoint(x: centerX, y: centerY)
-        } else {
-            let bottomSpace = captionHeight / 4
-            let yPoint: CGFloat = videoRect.maxY - bottomSpace - (textLabel.frame.height / 2)
-            textLabel.layer.position = CGPoint(x: videoRect.midX, y: yPoint)
-        }
+        return Coordinator(viewModel: viewModel)
     }
 }
 
 extension VideoPlayer {
-    
-    class Coordinator {
-        let controller = AVPlayerViewController()
-        var videoPlayer: VideoPlayer
-        var observer: NSKeyValueObservation?
-        var playerLayer = AVPlayerLayer()
 
-        
-        init(_ videoPlayer: VideoPlayer) {
-            self.videoPlayer = videoPlayer
-            addVideoFrameObserver()
-            addTapGesture()
-            setupPlayer()
+    class Coordinator: NSObject {
+        let controller = AVPlayerViewController()
+        let viewModel: VideoEditorViewModel
+
+        private var videoBoundsObserver: NSKeyValueObservation?
+        private var captionUpdateTimer: Any?
+        private let captionLabel = UILabel()
+
+        private var currentVideoRect: CGRect = .zero
+        private var cancellables = Set<AnyCancellable>()
+
+        init(viewModel: VideoEditorViewModel) {
+            self.viewModel = viewModel
+            super.init()
+            setupPlayerController()
+            setupCaptionLabel()
+            addGestures()
+            observeVideoBounds()
+            startCaptionUpdates()
+            observeConfigurationChanges()
         }
-        
-        private func setupPlayer() {
-            playerLayer = AVPlayerLayer(player: self.videoPlayer.viewModel.playerConfig.player)
-            playerLayer.frame = controller.view.bounds
-            DispatchQueue.main.async {
-                self.controller.player = self.videoPlayer.viewModel.playerConfig.player
-            }
-            controller.view.layer.addSublayer(playerLayer)
-            if let overlay = controller.contentOverlayView {
-                overlay.layer.addSublayer(self.videoPlayer.textLabel.layer)
-            } else {
-                controller.view.layer.addSublayer(self.videoPlayer.textLabel.layer)
-            }
+
+        private func setupPlayerController() {
+            controller.player = viewModel.playerConfig.player
             controller.showsPlaybackControls = false
-            // Initialize a safe video rect so captions appear on first open
-            if self.videoPlayer.videoRect == .zero {
-                let initial = self.controller.view.bounds
-                self.videoPlayer.videoRect = initial
-                self.videoPlayer.viewModel.playerConfig.videoRect = initial
-            }
-            // Enable dragging on the caption label
-            self.videoPlayer.textLabel.isUserInteractionEnabled = true
-            let pan = UIPanGestureRecognizer(target: self, action: #selector(Coordinator.handlePan(_:)))
-            self.videoPlayer.textLabel.addGestureRecognizer(pan)
+            controller.videoGravity = .resizeAspect
         }
-        private func addTapGesture() {
-            let tapGesture = UITapGestureRecognizer(target: self,
-                                                    action: #selector(Coordinator.handleTapGesture))
+
+        private func setupCaptionLabel() {
+            captionLabel.numberOfLines = 0
+            captionLabel.lineBreakMode = .byWordWrapping
+            captionLabel.textAlignment = .center
+            captionLabel.isUserInteractionEnabled = true
+            captionLabel.layer.zPosition = 1000
+            captionLabel.clipsToBounds = true
+            captionLabel.layer.cornerRadius = 8
+            captionLabel.adjustsFontSizeToFitWidth = false
+
+            // Add label to content overlay if available
+            if let overlay = controller.contentOverlayView {
+                overlay.addSubview(captionLabel)
+            } else {
+                controller.view.addSubview(captionLabel)
+            }
+        }
+
+        private func addGestures() {
+            // Pan gesture for moving captions
+            let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
+            captionLabel.addGestureRecognizer(panGesture)
+
+            // Tap gesture for play/pause
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
+            tapGesture.require(toFail: panGesture)
             controller.view.addGestureRecognizer(tapGesture)
         }
-        
-        @objc func handleTapGesture() {
-            if videoPlayer.viewModel.playerConfig.player.timeControlStatus == .playing {
-                videoPlayer.viewModel.playerConfig.player.pause()
-                videoPlayer.viewModel.editorStates.isPlaying = false
-                videoPlayer.viewModel.editorStates.isAutoScrolling = false
+
+        private func observeVideoBounds() {
+            videoBoundsObserver = controller.observe(\.videoBounds, options: [.new, .initial]) { [weak self] _, change in
+                guard let self = self, let rect = change.newValue, rect != .zero else { return }
+                self.currentVideoRect = rect
+                self.viewModel.playerConfig.videoRect = rect
+                self.updateCaptionDisplay()
             }
         }
-        
-        @objc func handlePan(_ recognizer: UIPanGestureRecognizer) {
-            // Only allow dragging when a caption is active
-            let currentTime = videoPlayer.viewModel.playerConfig.currentTime + 0.5
-            guard let idx = videoPlayer.viewModel.captionsConfig.items.firstIndex(where: { $0.startPoint.toSeconds...$0.endPoint.toSeconds ~= currentTime }) else {
+
+        private func startCaptionUpdates() {
+            // Update captions at UI tick frequency (15 times per second)
+            let interval = CMTime(value: 1, timescale: Constants.VPCap.uiTickPerSecond)
+            captionUpdateTimer = viewModel.playerConfig.player.addPeriodicTimeObserver(
+                forInterval: interval,
+                queue: .main
+            ) { [weak self] _ in
+                self?.updateCaptionDisplay()
+            }
+        }
+
+        private func observeConfigurationChanges() {
+            // Observe caption configuration changes for real-time preview
+            viewModel.objectWillChange
+                .sink { [weak self] _ in
+                    DispatchQueue.main.async {
+                        self?.updateCaptionDisplay()
+                    }
+                }
+                .store(in: &cancellables)
+        }
+
+        private func updateCaptionDisplay() {
+            guard currentVideoRect != .zero else { return }
+
+            // Use the same 0.5 second offset as the timeline to sync caption display with the timeline indicator
+            let currentTime = viewModel.playerConfig.currentTime + 0.5
+
+            // Find active caption at current time (with offset to match timeline)
+            let activeCaption = viewModel.captionsConfig.items.first { caption in
+                let startTime = caption.startPoint.toSeconds
+                let endTime = caption.endPoint.toSeconds
+                return currentTime >= startTime && currentTime <= endTime
+            }
+
+            guard let caption = activeCaption, !caption.captionText.isEmpty else {
+                captionLabel.isHidden = true
                 return
             }
-            let translation = recognizer.translation(in: controller.view)
-            recognizer.setTranslation(.zero, in: controller.view)
-            var newCenter = videoPlayer.textLabel.layer.position
-            newCenter.x += translation.x
-            newCenter.y += translation.y
-            // Clamp within video bounds considering label size
-            let rect = videoPlayer.videoRect
-            let halfW = videoPlayer.textLabel.frame.width / 2
-            let halfH = videoPlayer.textLabel.frame.height / 2
-            newCenter.x = min(max(newCenter.x, rect.minX + halfW), rect.maxX - halfW)
-            newCenter.y = min(max(newCenter.y, rect.minY + halfH), rect.maxY - halfH)
-            videoPlayer.textLabel.layer.position = newCenter
-            if recognizer.state == .ended || recognizer.state == .cancelled || recognizer.state == .failed {
-                let xPerc = (newCenter.x - rect.minX) / rect.width
-                let yPerc = (newCenter.y - rect.minY) / rect.height
-                videoPlayer.viewModel.captionsConfig.items[idx].positionX = Double(xPerc)
-                videoPlayer.viewModel.captionsConfig.items[idx].positionY = Double(yPerc)
+
+            captionLabel.isHidden = false
+            captionLabel.text = caption.captionText
+
+            // Apply text configuration
+            let config = viewModel.captionsConfig.captionConfig
+            captionLabel.font = config.text.font.withSize(config.text.fontSize)
+            captionLabel.textAlignment = config.text.alignment
+
+            // Ensure proper text rendering for multiline
+            captionLabel.numberOfLines = 0
+            captionLabel.lineBreakMode = .byWordWrapping
+
+            // Apply colors
+            let defaultTextColor = UIColor.white
+            let ap = Colors.appPurple.components
+            let defaultBgColor = UIColor(red: ap.red, green: ap.green, blue: ap.blue, alpha: ap.opacity)
+
+            if let textColorHex = caption.textColorHex, let textCG = CGColor.fromHexString(textColorHex) {
+                captionLabel.textColor = UIColor(cgColor: textCG)
+            } else {
+                captionLabel.textColor = defaultTextColor
+            }
+
+            if let bgColorHex = caption.backgroundColorHex, let bgCG = CGColor.fromHexString(bgColorHex) {
+                captionLabel.backgroundColor = UIColor(cgColor: bgCG)
+            } else {
+                captionLabel.backgroundColor = defaultBgColor
+            }
+
+            // Calculate size with proper padding
+            let maxWidth = currentVideoRect.width * 0.8
+            let maxHeight = currentVideoRect.height * 0.25
+
+            // Add padding for background
+            let horizontalPadding: CGFloat = 16
+            let verticalPadding: CGFloat = 8
+
+            // Calculate the size that fits the text with word wrapping
+            let availableWidth = maxWidth - (horizontalPadding * 2)
+            let textSize = captionLabel.sizeThatFits(CGSize(width: availableWidth, height: maxHeight - (verticalPadding * 2)))
+
+            let labelSize = CGSize(
+                width: min(textSize.width + (horizontalPadding * 2), maxWidth),
+                height: min(textSize.height + (verticalPadding * 2), maxHeight)
+            )
+
+            // Position the label
+            let centerX: CGFloat
+            let centerY: CGFloat
+
+            if let posX = caption.positionX, let posY = caption.positionY,
+               posX >= 0, posY >= 0, posX <= 1, posY <= 1 {
+                // Use custom position
+                centerX = currentVideoRect.minX + (currentVideoRect.width * CGFloat(posX))
+                centerY = currentVideoRect.minY + (currentVideoRect.height * CGFloat(posY))
+            } else {
+                // Default to bottom center
+                centerX = currentVideoRect.midX
+                let bottomOffset = currentVideoRect.height * 0.1
+                centerY = currentVideoRect.maxY - bottomOffset - (labelSize.height / 2)
+            }
+
+            // Clamp to video bounds
+            let halfW = labelSize.width / 2
+            let halfH = labelSize.height / 2
+            let clampedX = min(max(centerX, currentVideoRect.minX + halfW), currentVideoRect.maxX - halfW)
+            let clampedY = min(max(centerY, currentVideoRect.minY + halfH), currentVideoRect.maxY - halfH)
+
+            captionLabel.frame = CGRect(
+                x: clampedX - halfW,
+                y: clampedY - halfH,
+                width: labelSize.width,
+                height: labelSize.height
+            )
+        }
+
+        @objc private func handleTap(_ recognizer: UITapGestureRecognizer) {
+            if viewModel.playerConfig.player.timeControlStatus == .playing {
+                viewModel.playerConfig.player.pause()
+                viewModel.editorStates.isPlaying = false
+                viewModel.editorStates.isAutoScrolling = false
             }
         }
-        
-        private func addVideoFrameObserver() {
-            self.observer = controller.observe(\.videoBounds, options: [.new]) { [weak self] _, change in
-                guard let self, let rect = change.newValue else { return }
-                DispatchQueue.main.async {
-                    self.videoPlayer.videoRect = rect
-                    self.videoPlayer.viewModel.playerConfig.videoRect = rect
-                    self.playerLayer.frame = rect
-                    if let overlay = self.controller.contentOverlayView {
-                        if self.videoPlayer.textLabel.layer.superlayer !== overlay.layer {
-                            self.videoPlayer.textLabel.layer.removeFromSuperlayer()
-                            overlay.layer.addSublayer(self.videoPlayer.textLabel.layer)
-                        }
-                    } else if self.videoPlayer.textLabel.layer.superlayer == nil {
-                        self.controller.view.layer.addSublayer(self.videoPlayer.textLabel.layer)
-                    }
-                    if self.playerLayer.superlayer == nil {
-                        self.controller.view.layer.addSublayer(self.playerLayer)
-                    }
-                    self.videoPlayer.viewModel.playerConfig.playerLayer = self.controller
-                }
+
+        @objc private func handlePan(_ recognizer: UIPanGestureRecognizer) {
+            // Use the same 0.5 second offset as the timeline to match the indicator position
+            let currentTime = viewModel.playerConfig.currentTime + 0.5
+
+            // Find the active caption at the timeline indicator position
+            guard let captionIndex = viewModel.captionsConfig.items.firstIndex(where: { caption in
+                let startTime = caption.startPoint.toSeconds
+                let endTime = caption.endPoint.toSeconds
+                return currentTime >= startTime && currentTime <= endTime
+            }) else {
+                return
             }
+
+            let translation = recognizer.translation(in: controller.view)
+            recognizer.setTranslation(.zero, in: controller.view)
+
+            var newCenter = captionLabel.center
+            newCenter.x += translation.x
+            newCenter.y += translation.y
+
+            // Clamp to video bounds
+            let halfW = captionLabel.frame.width / 2
+            let halfH = captionLabel.frame.height / 2
+            newCenter.x = min(max(newCenter.x, currentVideoRect.minX + halfW), currentVideoRect.maxX - halfW)
+            newCenter.y = min(max(newCenter.y, currentVideoRect.minY + halfH), currentVideoRect.maxY - halfH)
+
+            captionLabel.center = newCenter
+
+            // Save position when gesture ends
+            if recognizer.state == .ended || recognizer.state == .cancelled || recognizer.state == .failed {
+                let normalizedX = (newCenter.x - currentVideoRect.minX) / currentVideoRect.width
+                let normalizedY = (newCenter.y - currentVideoRect.minY) / currentVideoRect.height
+
+                viewModel.captionsConfig.items[captionIndex].positionX = Double(normalizedX)
+                viewModel.captionsConfig.items[captionIndex].positionY = Double(normalizedY)
+            }
+        }
+
+        deinit {
+            if let timer = captionUpdateTimer {
+                viewModel.playerConfig.player.removeTimeObserver(timer)
+            }
+            videoBoundsObserver?.invalidate()
         }
     }
 }
