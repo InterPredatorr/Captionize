@@ -44,27 +44,25 @@ class VideoExportManager {
     }
     
     func newCaptionTextLayerWith(_ item: CaptionItem, frame: CGRect, naturalFontSize: CGFloat, videoDuration: Double) -> CALayer {
-        // Calculate padding scaled to video resolution to match preview proportions
-        // The scaleFactor ensures padding grows proportionally with video resolution
-        let scaleFactor = frame.width / playerConfig.videoRect.width
+        // IMPORTANT: playerConfig.videoRect may be .zero on first export if the video player
+        // hasn't rendered yet. In that case, use a reasonable default based on screen dimensions.
+        let playerWidth = playerConfig.videoRect.width > 0 ? playerConfig.videoRect.width : UIScreen.main.bounds.width
+        let scaleFactor = frame.width / playerWidth
         let horizontalPadding: CGFloat = 16 * scaleFactor
         let verticalPadding: CGFloat = 8 * scaleFactor
         let cornerRadius: CGFloat = 8 * scaleFactor
 
-        // Calculate maximum size
         let maxWidth = frame.width * 0.8
         let maxHeight = frame.height * 0.25
 
-        // Colors
         let ap = Colors.appPurple.components
         let defaultBgCG = UIColor(red: ap.red, green: ap.green, blue: ap.blue, alpha: ap.opacity).cgColor
         let defaultTextCG = UIColor.white.cgColor
         let bgCG = CGColor.fromHexString(item.backgroundColorHex) ?? defaultBgCG
         let textCG = CGColor.fromHexString(item.textColorHex) ?? defaultTextCG
 
-        // Create text layer with proper font
         let textLayer = CATextLayer()
-        textLayer.contentsScale = 3.0  // High resolution for export
+        textLayer.contentsScale = 3.0
 
         // CRITICAL: Use NSAttributedString instead of plain string for better rendering
         // This fixes issues with CATextLayer text clipping and wrapping
@@ -172,8 +170,14 @@ class VideoExportManager {
         // Setting beginTime and duration alone doesn't make layers appear/disappear.
         // We must use explicit opacity animations to control visibility timing.
 
-        let startTime = item.startPoint.toSeconds
-        let endTime = item.endPoint.toSeconds
+        // IMPORTANT: The timeline UI and live preview use a 0.5 second offset where the
+        // center indicator represents currentTime + 0.5. This means when the user positions
+        // a caption, they see it at currentTime + 0.5 in the preview. To match this behavior
+        // in the export, we need to subtract 0.5 from the caption times so they appear at
+        // the same visual time the user saw during editing.
+        let timelineOffset = 0.5
+        let startTime = max(0, item.startPoint.toSeconds - timelineOffset)
+        let endTime = max(0, item.endPoint.toSeconds - timelineOffset)
         let captionDuration = endTime - startTime
 
         // Create opacity animation to control when caption is visible
@@ -222,7 +226,7 @@ class VideoExportManager {
         opacityAnimation.keyTimes = keyTimes
         opacityAnimation.values = values
 
-        print("📝 Caption timing: start=\(startTime)s, end=\(endTime)s, videoDuration=\(videoDuration)s")
+        print("📝 Caption timing: start=\(startTime)s, end=\(endTime)s (adjusted by -\(timelineOffset)s offset), videoDuration=\(videoDuration)s")
         print("   Keyframes: \(keyTimes.map { $0.doubleValue })")
 
         containerLayer.add(opacityAnimation, forKey: "opacity")
@@ -249,7 +253,11 @@ class VideoExportManager {
     
     func calculateAbsoluteFontSize(videoSize: CGSize, referenceFontSize: CGFloat) -> CGFloat {
         let divider = videoSize.width > videoSize.height ? videoSize.width : videoSize.height
-        let scaleFactor = divider / (playerConfig.videoRect.width > playerConfig.videoRect.height ? playerConfig.videoRect.width : playerConfig.videoRect.height)
+        // IMPORTANT: playerConfig.videoRect may be .zero on first export if the video player
+        // hasn't rendered yet. In that case, use screen dimensions as fallback.
+        let playerRect = playerConfig.videoRect.width > 0 ? playerConfig.videoRect : UIScreen.main.bounds
+        let playerDivider = playerRect.width > playerRect.height ? playerRect.width : playerRect.height
+        let scaleFactor = divider / playerDivider
         return referenceFontSize * scaleFactor
     }
     

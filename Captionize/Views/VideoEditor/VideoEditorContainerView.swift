@@ -15,7 +15,7 @@ struct VideoEditorContainerView: View {
     let provider: MyProjectsProvider
     @State var project: MyProject?
     @State var isExporting = false
-    @State var showingAlert = false
+    @State var showingResultAlert = false
     @State var hasSuccessfullyExported = false
 
     var body: some View {
@@ -28,19 +28,33 @@ struct VideoEditorContainerView: View {
                         .environment(\.managedObjectContext, moc)
                 }
             }
-            if isExporting {
-                Color.black
-                ProgressView {
-                    Text("Exporting...")
-                }
-                .frame(width: 100, height: 100)
-            }
+
+            // Importing overlay
             if !viewModel.editorStates.isLoaded {
-                Color.black
-                ProgressView {
+                Color.black.ignoresSafeArea()
+                VStack(spacing: 16) {
+                    ProgressView()
+                        .scaleEffect(1.5)
+                        .tint(.white)
                     Text("Importing...")
+                        .foregroundColor(.white)
+                        .font(.headline)
                 }
-                .frame(width: 100, height: 100)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+
+            // Exporting overlay
+            if isExporting {
+                Color.black.opacity(0.7).ignoresSafeArea()
+                VStack(spacing: 16) {
+                    ProgressView()
+                        .scaleEffect(1.5)
+                        .tint(.white)
+                    Text("Exporting...")
+                        .foregroundColor(.white)
+                        .font(.headline)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
         .navigationBarBackButtonHidden(true)
@@ -72,12 +86,12 @@ struct VideoEditorContainerView: View {
                             .font(.roboto(size: 16, weight: .bold))
                             .foregroundColor(.white)
                     }
-                    .alert(isPresented: $showingAlert) {
+                    .alert(isPresented: $showingResultAlert) {
                         Alert(title: Text(hasSuccessfullyExported ? "Successful" : "Failed"),
                               message: Text(hasSuccessfullyExported ? "Video successfully saved in gallery"
                                                                     : "Saving video in gallery failed, please try again"),
                               dismissButton: Alert.Button.cancel(Text(hasSuccessfullyExported ? "OK" : "Retry")) {
-                            showingAlert = false
+                            showingResultAlert = false
                             if hasSuccessfullyExported { return }
                             exportVideo()
                         })
@@ -102,7 +116,7 @@ struct VideoEditorContainerView: View {
             viewModel.exportVideo { url in
                 hasSuccessfullyExported = url != nil
                 isExporting = false
-                showingAlert = true
+                showingResultAlert = true
             }
         }
     }
